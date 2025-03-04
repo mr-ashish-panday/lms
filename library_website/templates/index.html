@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Library Management System{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2A5C82;   /* Deep sophisticated blue */
+            --secondary-color: #5BA199;  /* Calming teal */
+            --accent-color: #D4A76A;    /* Warm golden accent */
+            --light-bg: #F5F7FA;        /* Soft background gray */
+            --dark-text: #2D3436;       /* Deep text color */
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--dark-text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: white !important;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 40px 0;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 12px 28px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #1E4665;
+            transform: translateY(-2px);
+        }
+
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+        }
+
+        .hero-overlay {
+            background: linear-gradient(135deg, rgba(42,92,130,0.9), rgba(91,161,153,0.9)),
+                        url('https://source.unsplash.com/random/1200x800/?library');
+            background-size: cover;
+            background-position: center;
+            padding: 5rem 2rem;
+            border-radius: 15px;
+        }
+
+        .icon-feature {
+            color: var(--secondary-color);
+            font-size: 2.8rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .footer {
+            background: var(--primary-color);
+            color: rgba(255,255,255,0.9);
+            margin-top: auto;
+            padding: 2rem 0;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            padding: 14px 20px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .features-section .card {
+            border-top: 4px solid var(--accent-color);
+        }
+
+        .card-img-top {
+            height: 300px;
+            object-fit: cover;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-color) !important;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-book-open"></i> BCT-078 Library
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/books"><i class="fas fa-book"></i> Books</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/search"><i class="fas fa-search"></i> Search</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/add_member"><i class="fas fa-user-plus"></i> Members</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Hero Section -->
+            <div class="hero-section text-center py-5 mb-5">
+                <div class="hero-overlay p-5 rounded-lg">
+                    <h1 class="display-4 text-white mb-4">Welcome to BCT Library</h1>
+                    <div class="search-bar mx-auto" style="max-width: 600px;">
+                        <form class="input-group">
+                            <input type="text" class="form-control" placeholder="Search our collection...">
+                            <div class="input-group-append">
+                                <button class="btn btn-light" type="button">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Section -->
+            <div class="features-section row mb-5">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 text-center p-4">
+                        <i class="fas fa-book-reader icon-feature"></i>
+                        <h3>Explore Collection</h3>
+                        <p class="text-muted">Browse through 50,000+ books across various genres</p>
+                        <a href="/books" class="btn btn-primary">View Catalog</a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 text-center p-4">
+                        <i class="fas fa-user-plus icon-feature"></i>
+                        <h3>Join Community</h3>
+                        <p class="text-muted">Become a member to access exclusive benefits</p>
+                        <a href="/add_member" class="btn btn-primary">Register Now</a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 text-center p-4">
+                        <i class="fas fa-chart-line icon-feature"></i>
+                        <h3>Statistics</h3>
+                        <p class="text-muted">50,000+ Books<br>10,000+ Members<br>100+ Daily Visits</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Arrivals Section -->
+            <div class="recent-additions mb-5">
+                <h2 class="mb-4 text-center" style="color: var(--primary-color);">New Arrivals</h2>
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="card h-100">
+                            <img src="assets/book-cover.jpg" class="card-img-top" alt="Book Cover">
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: var(--primary-color);">Book Title</h5>
+                                <p class="card-text">Author Name</p>
+                                <a href="#" class="btn btn-sm btn-primary">Details</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Repeat more book cards as needed -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container text-center">
+            <p class="mb-0">
+                © 2025 Library Management System | 
+                <a href="#" class="text-light">Privacy Policy</a> | 
+                <a href="#" class="text-light">Terms of Service</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

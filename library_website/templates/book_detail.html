@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Detail</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2A5C82;
+            --secondary-color: #5BA199;
+            --accent-color: #D4A76A;
+            --light-bg: #F5F7FA;
+            --dark-text: #2D3436;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--dark-text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: white !important;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-color) !important;
+            transform: translateY(-2px);
+        }
+
+        .detail-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 800px;
+        }
+
+        .detail-item {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 12px 28px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #1E4665;
+            transform: translateY(-2px);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+
+        .detail-icon {
+            color: var(--secondary-color);
+            width: 30px;
+            margin-right: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-book-open"></i> BCT-078 Library
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/books"><i class="fas fa-book"></i> Books</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/search"><i class="fas fa-search"></i> Search</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/add_member"><i class="fas fa-user-plus"></i> Members</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="detail-card">
+            <h1 class="text-center"><i class="fas fa-book mr-2"></i>Book Details</h1>
+            
+            <div class="detail-item">
+                <i class="fas fa-heading detail-icon"></i>
+                <strong>Title:</strong> {{ book[2] }}
+            </div>
+
+            <div class="detail-item">
+                <i class="fas fa-barcode detail-icon"></i>
+                <strong>ISBN:</strong> {{ book[1] }}
+            </div>
+
+            <div class="detail-item">
+                <i class="fas fa-calendar-alt detail-icon"></i>
+                <strong>Publication Year:</strong> {{ book[3] }}
+            </div>
+
+            <div class="detail-item">
+                <i class="fas fa-tags detail-icon"></i>
+                <strong>Genre:</strong> {{ book[4] }}
+            </div>
+
+            <div class="detail-item">
+                <i class="fas fa-user-edit detail-icon"></i>
+                <strong>Author ID:</strong> {{ book[7] }}
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="/books" class="btn btn-primary">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Book List
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto">
+        <div class="container text-center">
+            <p class="mb-0">
+                © 2025 Library Management System | 
+                <a href="#" class="text-light">Privacy Policy</a> | 
+                <a href="#" class="text-light">Terms of Service</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
