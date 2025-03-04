@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books for Semester {{ semester }}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        :root {
+            --primary-color: #2A5C82;   /* Deep sophisticated blue */
+            --secondary-color: #5BA199;  /* Calming teal */
+            --accent-color: #D4A76A;    /* Warm golden accent */
+            --light-bg: #F5F7FA;        /* Soft background gray */
+            --dark-text: #2D3436;       /* Deep text color */
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--dark-text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: white !important;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 40px 0;
+        }
+
+        .book-list-table {
+            margin-top: 30px;
+        }
+        .book-list-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .book-list-table th, .book-list-table td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: left;
+        }
+        .book-list-table th {
+            background-color: var(--primary-color); /* Match your primary color */
+            color: white;
+        }
+        .book-list-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .book-list-table tr:hover {
+            background-color: #e9ecef;
+        }
+
+        .footer {
+            background: var(--primary-color);
+            color: rgba(255,255,255,0.9);
+            margin-top: auto;
+            padding: 2rem 0;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-color) !important;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-book-open"></i> BCT-078 Library
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/books"><i class="fas fa-book"></i> Books</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/search"><i class="fas fa-search"></i> Search</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/add_member"><i class="fas fa-user-plus"></i> Members</a>
+                    </li>
+                    {% if session.get('user_id') %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/register"><i class="fas fa-user-plus"></i> Register</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <h1 class="mt-4 mb-4" style="color: var(--primary-color);">Books for Semester {{ semester }}</h1>
+            <div class="book-list-table">
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>ISBN</th>
+                        <th>Publication Year</th>
+                        <th>Genre</th>
+                        <th>Publisher</th>
+                        <th>Edition</th>
+                    </tr>
+                    {% if books %}
+                        {% for book in books %}
+                        <tr>
+                            <td>{{ book['ID'] }}</td>
+                            <td>{{ book['Title'] if book['Title'] else 'No Title' }}</td>
+                            <td>{{ book['Author'] or 'No Author' }}</td>
+                            <td>{{ book['ISBN'] if book['ISBN'] else 'N/A' }}</td>
+                            <td>{{ book['PublicationYear'] if book['PublicationYear'] else 'N/A' }}</td>
+                            <td>{{ book['Genre'] if book['Genre'] else 'N/A' }}</td>
+                            <td>{{ book['Publisher'] if book['Publisher'] else 'N/A' }}</td>
+                            <td>{{ book['Edition'] if book['Edition'] else 'N/A' }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="8">No books found for Semester {{ semester }}.</td>
+                        </tr>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container text-center">
+            <p class="mb-0">
+                © 2025 Library Management System | 
+                <a href="#" class="text-light">Privacy Policy</a> | 
+                <a href="#" class="text-light">Terms of Service</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

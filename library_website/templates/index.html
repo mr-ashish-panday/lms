@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Library Management System{% endblock %}</title>
+    <title>{% block title %}Library Management System{% endblock %}{% if semester %} - Books for Semester {{ semester }}{% endif %}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
@@ -58,6 +58,8 @@
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background-color: white;
+            border-top: 4px solid var(--secondary-color); /* Teal border for cards */
         }
 
         .card:hover {
@@ -111,6 +113,56 @@
             color: var(--accent-color) !important;
             transform: translateY(-2px);
         }
+
+        /* Additional styles for search pages */
+        .advanced-search-section {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        /* Styles for Semester Cards */
+        .explore-collection-section .card {
+            text-align: center;
+            padding: 20px;
+            cursor: pointer;
+            background-color: white;
+            border-top: 4px solid var(--secondary-color); /* Teal border for consistency */
+        }
+
+        .explore-collection-section .card:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-8px);
+        }
+
+        .explore-collection-section .icon-feature {
+            color: var(--secondary-color);
+        }
+
+        /* Styles for Book List Table */
+        .book-list-table {
+            margin-top: 30px;
+        }
+        .book-list-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .book-list-table th, .book-list-table td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: left;
+        }
+        .book-list-table th {
+            background-color: var(--primary-color); /* Match your primary color */
+            color: white;
+        }
+        .book-list-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .book-list-table tr:hover {
+            background-color: #e9ecef;
+        }
     </style>
 </head>
 <body>
@@ -134,6 +186,18 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/add_member"><i class="fas fa-user-plus"></i> Members</a>
                     </li>
+                    {% if session.get('user_id') %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/register"><i class="fas fa-user-plus"></i> Register</a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
@@ -142,67 +206,208 @@
     <!-- Main Content -->
     <main class="main-content">
         <div class="container">
-            <!-- Hero Section -->
-            <div class="hero-section text-center py-5 mb-5">
-                <div class="hero-overlay p-5 rounded-lg">
-                    <h1 class="display-4 text-white mb-4">Welcome to BCT Library</h1>
-                    <div class="search-bar mx-auto" style="max-width: 600px;">
-                        <form class="input-group">
-                            <input type="text" class="form-control" placeholder="Search our collection...">
-                            <div class="input-group-append">
-                                <button class="btn btn-light" type="button">
-                                    <i class="fas fa-search"></i>
-                                </button>
+            {% if not semester %}
+                <!-- Hero Section (Homepage Only) -->
+                <div class="hero-section text-center py-5 mb-5">
+                    <div class="hero-overlay p-5 rounded-lg">
+                        <h1 class="display-4 text-white mb-4">Welcome to BCT Library</h1>
+                        <div class="search-bar mx-auto" style="max-width: 600px;">
+                            <form class="input-group">
+                                <input type="text" class="form-control" placeholder="Search our collection...">
+                                <div class="input-group-append">
+                                    <button class="btn btn-light" type="button">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Search Section (Homepage Only) -->
+                <div class="advanced-search-section mb-5">
+                    <h2 class="mb-4 text-center" style="color: var(--primary-color);">Advanced Book Search</h2>
+                    <form method="POST" action="/advanced_search">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Title:</label>
+                                    <input type="text" class="form-control" name="title" placeholder="Enter book title">
+                                </div>
+                                <div class="form-group">
+                                    <label>Author:</label>
+                                    <input type="text" class="form-control" name="author" placeholder="Enter author name">
+                                </div>
+                                <div class="form-group">
+                                    <label>Subject:</label>
+                                    <input type="text" class="form-control" name="subject" placeholder="Enter subject">
+                                </div>
                             </div>
-                        </form>
-                    </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>ISBN:</label>
+                                    <input type="text" class="form-control" name="isbn" placeholder="Enter ISBN">
+                                </div>
+                                <div class="form-group">
+                                    <label>Course Code:</label>
+                                    <input type="text" class="form-control" name="course_code" placeholder="Enter course code">
+                                </div>
+                                {% if session.get('role') == 'staff' %}
+                                    <div class="form-group">
+                                        <label>Staff Actions:</label>
+                                        <div>
+                                            <form method="post" action="/issue_book" class="d-inline mr-2">
+                                                <input type="hidden" name="book_id" value="{{ book[0] }}">
+                                                <input type="hidden" name="member_id" value="1"> <!-- Replace with dynamic member ID -->
+                                                <button type="submit" class="btn btn-success">Issue Book</button>
+                                            </form>
+                                            <form method="post" action="/return_book/{{ borrow_id }}" class="d-inline">
+                                                <button type="submit" class="btn btn-warning">Return Book</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </div>
+                    </form>
                 </div>
-            </div>
 
-            <!-- Features Section -->
-            <div class="features-section row mb-5">
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 text-center p-4">
-                        <i class="fas fa-book-reader icon-feature"></i>
-                        <h3>Explore Collection</h3>
-                        <p class="text-muted">Browse through 50,000+ books across various genres</p>
-                        <a href="/books" class="btn btn-primary">View Catalog</a>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 text-center p-4">
-                        <i class="fas fa-user-plus icon-feature"></i>
-                        <h3>Join Community</h3>
-                        <p class="text-muted">Become a member to access exclusive benefits</p>
-                        <a href="/add_member" class="btn btn-primary">Register Now</a>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 text-center p-4">
-                        <i class="fas fa-chart-line icon-feature"></i>
-                        <h3>Statistics</h3>
-                        <p class="text-muted">50,000+ Books<br>10,000+ Members<br>100+ Daily Visits</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- New Arrivals Section -->
-            <div class="recent-additions mb-5">
-                <h2 class="mb-4 text-center" style="color: var(--primary-color);">New Arrivals</h2>
-                <div class="row">
-                    <div class="col-lg-3 col-md-6 mb-4">
-                        <div class="card h-100">
-                            <img src="assets/book-cover.jpg" class="card-img-top" alt="Book Cover">
-                            <div class="card-body">
-                                <h5 class="card-title" style="color: var(--primary-color);">Book Title</h5>
-                                <p class="card-text">Author Name</p>
-                                <a href="#" class="btn btn-sm btn-primary">Details</a>
+                <!-- Explore Collection Section (Homepage Only) -->
+                <div class="explore-collection-section mb-5">
+                    <h2 class="mb-4 text-center" style="color: var(--primary-color);">Explore Collection</h2>
+                    <div class="row justify-content-center">
+                        <!-- Semester 1 -->
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100 text-center p-4">
+                                <i class="fas fa-book icon-feature"></i>
+                                <h3>Semester 1</h3>
+                                <a href="/semester_books/1" class="btn btn-primary">View Books</a>
+                            </div>
+                        </div>
+                        <!-- Semester 2 -->
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100 text-center p-4">
+                                <i class="fas fa-book icon-feature"></i>
+                                <h3>Semester 2</h3>
+                                <a href="/semester_books/2" class="btn btn-primary">View Books</a>
+                            </div>
+                        </div>
+                        <!-- Semester 3 -->
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100 text-center p-4">
+                                <i class="fas fa-book icon-feature"></i>
+                                <h3>Semester 3</h3>
+                                <a href="/semester_books/3" class="btn btn-primary">View Books</a>
+                            </div>
+                        </div>
+                        <!-- Semester 4 -->
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100 text-center p-4">
+                                <i class="fas fa-book icon-feature"></i>
+                                <h3>Semester 4</h3>
+                                <a href="/semester_books/4" class="btn btn-primary">View Books</a>
+                            </div>
+                        </div>
+                        <!-- Semester 5 -->
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100 text-center p-4">
+                                <i class="fas fa-book icon-feature"></i>
+                                <h3>Semester 5</h3>
+                                <a href="/semester_books/5" class="btn btn-primary">View Books</a>
+                            </div>
+                        </div>
+                        <!-- Semester 6 -->
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100 text-center p-4">
+                                <i class="fas fa-book icon-feature"></i>
+                                <h3>Semester 6</h3>
+                                <a href="/semester_books/6" class="btn btn-primary">View Books</a>
+                            </div>
+                        </div>
+                        <!-- Semester 7 -->
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100 text-center p-4">
+                                <i class="fas fa-book icon-feature"></i>
+                                <h3>Semester 7</h3>
+                                <a href="/semester_books/7" class="btn btn-primary">View Books</a>
+                            </div>
+                        </div>
+                        <!-- Semester 8 -->
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100 text-center p-4">
+                                <i class="fas fa-book icon-feature"></i>
+                                <h3>Semester 8</h3>
+                                <a href="/semester_books/8" class="btn btn-primary">View Books</a>
                             </div>
                         </div>
                     </div>
-                    <!-- Repeat more book cards as needed -->
                 </div>
-            </div>
+
+                <!-- PDF Upload Section (Homepage Only) -->
+                <div class="pdf-upload-section mb-5">
+                    <h2 class="mb-4 text-center" style="color: var(--primary-color);">Upload PDF</h2>
+                    <div class="row justify-content-center">
+                        <div class="col-lg-6">
+                            <div class="card p-4">
+                                <h4 class="text-center mb-4">Upload Your PDF</h4>
+                                <form method="post" action="/" enctype="multipart/form-data">
+                                    <div class="form-group">
+                                        <label for="semester">Semester:</label>
+                                        <input type="text" class="form-control" id="semester" name="semester" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="subject">Subject:</label>
+                                        <input type="text" class="form-control" id="subject" name="subject" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="file">Select PDF:</label>
+                                        <input type="file" class="form-control-file" id="file" name="file" accept=".pdf" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-block">Upload</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <!-- Book List Section (Shown only for semester views) -->
+                <h1 class="mt-4 mb-4" style="color: var(--primary-color);">Books for Semester {{ semester }}</h1>
+                <div class="book-list-table mb-5">
+                    <table>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>ISBN</th>
+                            <th>Publication Year</th>
+                            <th>Genre</th>
+                            <th>Publisher</th>
+                            <th>Edition</th>
+                        </tr>
+                        {% if books %}
+                            {% for book in books %}
+                            <tr>
+                                <td>{{ book['ID'] }}</td>
+                                <td>{{ book['Title'] if book['Title'] else 'No Title' }}</td>
+                                <td>{{ book['Author'] or 'No Author' }}</td>
+                                <td>{{ book['ISBN'] if book['ISBN'] else 'N/A' }}</td>
+                                <td>{{ book['PublicationYear'] if book['PublicationYear'] else 'N/A' }}</td>
+                                <td>{{ book['Genre'] if book['Genre'] else 'N/A' }}</td>
+                                <td>{{ book['Publisher'] if book['Publisher'] else 'N/A' }}</td>
+                                <td>{{ book['Edition'] if book['Edition'] else 'N/A' }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="8">No books found for Semester {{ semester }}.</td>
+                            </tr>
+                        {% endif %}
+                    </table>
+                </div>
+            {% endif %}
         </div>
     </main>
 
